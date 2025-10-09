@@ -1,0 +1,25 @@
+name: GitHub Snake
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # roda todo dia à meia-noite
+  workflow_dispatch: # permite rodar manualmente
+
+jobs:
+  generate_snake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-snake.svg
+            dist/github-snake-dark.svg?palette=github-dark
+      - name: Commit Snake
+        run: |
+          git config --local user.email "seu-email@exemplo.com"
+          git config --local user.name "Seu Nome"
+          git add dist/
+          git commit -m "Atualiza snake daily"
+          git push
